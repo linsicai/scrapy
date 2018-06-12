@@ -1,5 +1,4 @@
 import warnings
-
 from scrapy.exceptions import ScrapyDeprecationWarning
 
 DEPRECATED_SETTINGS = [
