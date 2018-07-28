@@ -5,6 +5,7 @@ This package contains a collection of Link Extractors.
 
 For more info see docs/topics/link-extractors.rst
 """
+
 import re
 
 from six.moves.urllib.parse import urlparse

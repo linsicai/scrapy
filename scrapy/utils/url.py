@@ -5,16 +5,19 @@ library.
 Some of the functions that used to be imported from this module have been moved
 to the w3lib.url module. Always import those from there instead.
 """
+
 import posixpath
 import re
+
 from six.moves.urllib.parse import (ParseResult, urldefrag, urlparse, urlunparse)
 
 # scrapy.utils.url was moved to w3lib.url and import * ensures this
 # move doesn't break old code
+
 from w3lib.url import *
 from w3lib.url import _safe_chars, _unquotepath
-from scrapy.utils.python import to_unicode
 
+from scrapy.utils.python import to_unicode
 
 def url_is_from_any_domain(url, domains):
     """Return True if the url belongs to any of the given domains"""

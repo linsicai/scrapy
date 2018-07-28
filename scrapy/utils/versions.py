@@ -9,7 +9,7 @@ import w3lib
 
 import scrapy
 
-
+# 组件版本
 def scrapy_components_versions():
     lxml_version = ".".join(map(str, lxml.etree.LXML_VERSION))
     libxml2_version = ".".join(map(str, lxml.etree.LIBXML_VERSION))
@@ -36,7 +36,6 @@ def scrapy_components_versions():
         ("cryptography", cryptography_version),
         ("Platform",  platform.platform()),
     ]
-
 
 def _get_openssl_version():
     try:

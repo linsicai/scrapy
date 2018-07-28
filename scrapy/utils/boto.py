@@ -5,8 +5,7 @@ import six
 
 from scrapy.exceptions import NotConfigured
 
-
-# aws 相关库
+# AWS 相关库
 def is_botocore():
     try:
         import botocore
