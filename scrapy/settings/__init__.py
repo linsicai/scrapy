@@ -2,16 +2,22 @@ import six
 import json
 import copy
 import warnings
+
 from collections import MutableMapping
+
 from importlib import import_module
+
 from pprint import pformat
 
 from scrapy.utils.deprecate import create_deprecated_class
+
 from scrapy.exceptions import ScrapyDeprecationWarning
 
 from . import default_settings
 
 
+# 配置优先级
+# 默认，命令，工程，爬虫，人工
 SETTINGS_PRIORITIES = {
     'default': 0,
     'command': 10,
@@ -20,7 +26,7 @@ SETTINGS_PRIORITIES = {
     'cmdline': 40,
 }
 
-
+# 获取优先级
 def get_settings_priority(priority):
     """
     Small helper function that looks up a given string priority in the
@@ -32,7 +38,7 @@ def get_settings_priority(priority):
     else:
         return priority
 
-
+# 属性值
 class SettingsAttribute(object):
 
     """Class for storing data related to settings attributes.
@@ -44,12 +50,16 @@ class SettingsAttribute(object):
     def __init__(self, value, priority):
         self.value = value
         if isinstance(self.value, BaseSettings):
+            # 基础配置，更新优先级
             self.priority = max(self.value.maxpriority(), priority)
         else:
+            # 非基础配置，覆盖优先级
             self.priority = priority
 
     def set(self, value, priority):
         """Sets value if priority is higher or equal than current priority."""
+
+        # 按优先级设置
         if priority >= self.priority:
             if isinstance(self.value, BaseSettings):
                 value = BaseSettings(value, priority=priority)
@@ -87,7 +97,9 @@ class BaseSettings(MutableMapping):
 
     def __init__(self, values=None, priority='project'):
         self.frozen = False
+
         self.attributes = {}
+
         self.update(values, priority)
 
     def __getitem__(self, opt_name):

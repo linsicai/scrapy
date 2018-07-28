@@ -29,4 +29,7 @@ def string_camelcase(string):
     'MissingImages'
 
     """
+
+    # string title 头字母大写分词
+    # 再去除无效字符
     return CAMELCASE_INVALID_CHARS.sub('', string.title())

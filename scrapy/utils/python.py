@@ -99,13 +99,21 @@ def unicode_to_str(text, encoding=None, errors='strict'):
 def to_unicode(text, encoding=None, errors='strict'):
     """Return the unicode representation of a bytes object `text`. If `text`
     is already an unicode object, return it as-is."""
+
+    # 如果已经是text，返回文本
     if isinstance(text, six.text_type):
         return text
+
+    # 如果不是bytes，抛出异常
     if not isinstance(text, (bytes, six.text_type)):
         raise TypeError('to_unicode must receive a bytes, str or unicode '
                         'object, got %s' % type(text).__name__)
+
+    # 设置编码
     if encoding is None:
         encoding = 'utf-8'
+
+    # 尝试解码
     return text.decode(encoding, errors)
 
 

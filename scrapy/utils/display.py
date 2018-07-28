@@ -3,11 +3,15 @@ pprint and pformat wrappers with colorization support
 """
 
 from __future__ import print_function
+
 import sys
+
 from pprint import pformat as pformat_
 
+# 颜色化
 def _colorize(text, colorize=True):
     if not colorize or not sys.stdout.isatty():
+        # 不需要或不支持
         return text
     try:
         from pygments import highlight

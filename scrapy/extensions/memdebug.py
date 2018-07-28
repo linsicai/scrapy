@@ -8,7 +8,9 @@ import gc
 import six
 
 from scrapy import signals
+
 from scrapy.exceptions import NotConfigured
+
 from scrapy.utils.trackref import live_refs
 
 
@@ -19,15 +21,22 @@ class MemoryDebugger(object):
 
     @classmethod
     def from_crawler(cls, crawler):
+        # 未配置
         if not crawler.settings.getbool('MEMDEBUG_ENABLED'):
             raise NotConfigured
+
+        # 创建对象
         o = cls(crawler.stats)
+
+        # 信号关联
         crawler.signals.connect(o.spider_closed, signal=signals.spider_closed)
         return o
 
     def spider_closed(self, spider, reason):
         gc.collect()
+
         self.stats.set_value('memdebug/gc_garbage_count', len(gc.garbage), spider=spider)
+
         for cls, wdict in six.iteritems(live_refs):
             if not wdict:
                 continue

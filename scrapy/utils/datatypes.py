@@ -8,6 +8,7 @@ This module must not depend on any module outside the Standard Library.
 import copy
 import six
 import warnings
+
 from collections import OrderedDict, Mapping
 
 from scrapy.exceptions import ScrapyDeprecationWarning
@@ -183,10 +184,11 @@ class SiteNode(object):
         return s
 
 
+# 大小写无关字典
 class CaselessDict(dict):
-
     __slots__ = ()
 
+    # seq为初始化参数
     def __init__(self, seq=None):
         super(CaselessDict, self).__init__()
         if seq:
@@ -224,7 +226,10 @@ class CaselessDict(dict):
         return dict.setdefault(self, self.normkey(key), self.normvalue(def_val))
 
     def update(self, seq):
+        # 转为list
         seq = seq.items() if isinstance(seq, Mapping) else seq
+
+        # k&v规则化
         iseq = ((self.normkey(k), self.normvalue(v)) for k, v in seq)
         super(CaselessDict, self).update(iseq)
 
