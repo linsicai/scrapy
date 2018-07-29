@@ -7,10 +7,12 @@ See documentation in docs/topics/spider-middleware.rst
 import logging
 
 from scrapy.http import Request
+
 from scrapy.exceptions import NotConfigured
 
 logger = logging.getLogger(__name__)
 
+# url 长度中间件
 
 class UrlLengthMiddleware(object):
 
@@ -20,12 +22,16 @@ class UrlLengthMiddleware(object):
     @classmethod
     def from_settings(cls, settings):
         maxlength = settings.getint('URLLENGTH_LIMIT')
+
         if not maxlength:
             raise NotConfigured
+
         return cls(maxlength)
 
     def process_spider_output(self, response, result, spider):
+
         def _filter(request):
+            # 过滤掉昌都过长的
             if isinstance(request, Request) and len(request.url) > self.maxlength:
                 logger.debug("Ignoring link (url length > %(maxlength)d): %(url)s ",
                              {'maxlength': self.maxlength, 'url': request.url},

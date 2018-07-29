@@ -9,12 +9,16 @@ from scrapy.exceptions import IgnoreRequest
 
 logger = logging.getLogger(__name__)
 
+# http code 中间件
+# - 允许全部
+# - 允许指定
 
 class HttpError(IgnoreRequest):
     """A non-200 response was filtered"""
 
     def __init__(self, response, *args, **kwargs):
         self.response = response
+
         super(HttpError, self).__init__(*args, **kwargs)
 
 
@@ -31,6 +35,9 @@ class HttpErrorMiddleware(object):
     def process_spider_input(self, response, spider):
         if 200 <= response.status < 300:  # common case
             return
+
+        # 取配置
+        # meta > spider > mw
         meta = response.meta
         if 'handle_httpstatus_all' in meta:
             return
@@ -40,8 +47,11 @@ class HttpErrorMiddleware(object):
             return
         else:
             allowed_statuses = getattr(spider, 'handle_httpstatus_list', self.handle_httpstatus_list)
+
+        # 允许状态
         if response.status in allowed_statuses:
             return
+
         raise HttpError(response, 'Ignoring non-200 response')
 
     def process_spider_exception(self, response, exception, spider):

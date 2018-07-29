@@ -10,6 +10,10 @@ from scrapy.http import Request
 
 logger = logging.getLogger(__name__)
 
+# url 深度中间件
+# - 最大深度
+# - 详细统计
+# - 优先级梯度
 
 class DepthMiddleware(object):
 
@@ -22,18 +26,24 @@ class DepthMiddleware(object):
     @classmethod
     def from_crawler(cls, crawler):
         settings = crawler.settings
+
         maxdepth = settings.getint('DEPTH_LIMIT')
         verbose = settings.getbool('DEPTH_STATS_VERBOSE')
         prio = settings.getint('DEPTH_PRIORITY')
+
         return cls(maxdepth, crawler.stats, verbose, prio)
 
     def process_spider_output(self, response, result, spider):
         def _filter(request):
             if isinstance(request, Request):
+                # 更新深度
                 depth = response.meta['depth'] + 1
                 request.meta['depth'] = depth
+
+                # 更新优先级
                 if self.prio:
                     request.priority -= depth * self.prio
+  
                 if self.maxdepth and depth > self.maxdepth:
                     logger.debug(
                         "Ignoring link (depth > %(maxdepth)d): %(requrl)s ",
@@ -42,9 +52,11 @@ class DepthMiddleware(object):
                     )
                     return False
                 elif self.stats:
+                    # 每个深度的统计
                     if self.verbose_stats:
                         self.stats.inc_value('request_depth_count/%s' % depth,
                                              spider=spider)
+                    # 最大深度
                     self.stats.max_value('request_depth_max', depth,
                                          spider=spider)
             return True

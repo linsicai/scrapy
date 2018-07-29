@@ -8,8 +8,11 @@ import warnings
 from w3lib.url import safe_url_string
 
 from scrapy.http import Request, Response
+
 from scrapy.exceptions import NotConfigured
+
 from scrapy import signals
+
 from scrapy.utils.python import to_native_str
 from scrapy.utils.httpobj import urlparse_cached
 from scrapy.utils.misc import load_object
@@ -297,6 +300,7 @@ class RefererMiddleware(object):
     def from_crawler(cls, crawler):
         if not crawler.settings.getbool('REFERER_ENABLED'):
             raise NotConfigured
+
         mw = cls(crawler.settings)
 
         # Note: this hook is a bit of a hack to intercept redirections
