@@ -19,24 +19,25 @@ from w3lib.url import _safe_chars, _unquotepath
 
 from scrapy.utils.python import to_unicode
 
+# 判断url是否属于指定域名
 def url_is_from_any_domain(url, domains):
     """Return True if the url belongs to any of the given domains"""
+
     host = parse_url(url).netloc.lower()
     if not host:
         return False
+
     domains = [d.lower() for d in domains]
     return any((host == d) or (host.endswith('.%s' % d)) for d in domains)
 
-
+# 判断url属于指定spider
 def url_is_from_spider(url, spider):
     """Return True if the url belongs to the given spider"""
-    return url_is_from_any_domain(url,
-        [spider.name] + list(getattr(spider, 'allowed_domains', [])))
 
+    return url_is_from_any_domain(url, [spider.name] + list(getattr(spider, 'allowed_domains', [])))
 
 def url_has_any_extension(url, extensions):
     return posixpath.splitext(parse_url(url).path)[1].lower() in extensions
-
 
 def parse_url(url, encoding=None):
     """Return urlparsed url from the given argument (which could be an already
@@ -70,14 +71,19 @@ def escape_ajax(url):
     >>> escape_ajax("www.example.com/ajax.html")
     'www.example.com/ajax.html'
     """
+
+    # 提取描点
     defrag, frag = urldefrag(url)
+
     if not frag.startswith('!'):
         return url
+
     return add_or_replace_parameter(defrag, '_escaped_fragment_', frag[1:])
 
 
 def add_http_if_no_scheme(url):
     """Add http as the default scheme if it is missing from the url."""
+
     match = re.match(r"^\w+://", url, flags=re.I)
     if not match:
         parts = urlparse(url)
@@ -89,9 +95,11 @@ def add_http_if_no_scheme(url):
 
 def guess_scheme(url):
     """Add an URL scheme if missing: file:// for filepath-like input or http:// otherwise."""
+
     parts = urlparse(url)
     if parts.scheme:
         return url
+
     # Note: this does not match Windows filepath
     if re.match(r'''^                   # start with...
                     (
@@ -121,9 +129,12 @@ def strip_url(url, strip_credentials=True, strip_default_port=True, origin_only=
     """
 
     parsed_url = urlparse(url)
+
     netloc = parsed_url.netloc
+
     if (strip_credentials or origin_only) and (parsed_url.username or parsed_url.password):
         netloc = netloc.split('@')[-1]
+
     if strip_default_port and parsed_url.port:
         if (parsed_url.scheme, parsed_url.port) in (('http', 80),
                                                     ('https', 443),
