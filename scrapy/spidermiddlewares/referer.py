@@ -2,6 +2,7 @@
 RefererMiddleware: populates Request referer field, based on the Response which
 originated it.
 """
+
 from six.moves.urllib.parse import urlparse
 import warnings
 
@@ -18,7 +19,7 @@ from scrapy.utils.httpobj import urlparse_cached
 from scrapy.utils.misc import load_object
 from scrapy.utils.url import strip_url
 
-
+# 本地
 LOCAL_SCHEMES = ('about', 'blob', 'data', 'filesystem',)
 
 POLICY_NO_REFERRER = "no-referrer"
@@ -32,10 +33,12 @@ POLICY_UNSAFE_URL = "unsafe-url"
 POLICY_SCRAPY_DEFAULT = "scrapy-default"
 
 
+# 基类
 class ReferrerPolicy(object):
 
     NOREFERRER_SCHEMES = LOCAL_SCHEMES
 
+    # 待重写
     def referrer(self, response_url, request_url):
         raise NotImplementedError()
 
@@ -47,6 +50,7 @@ class ReferrerPolicy(object):
         if urlparse(url).scheme not in self.NOREFERRER_SCHEMES:
             return self.origin(url)
 
+    # 规一化URL
     def strip_url(self, url, origin_only=False):
         """
         https://www.w3.org/TR/referrer-policy/#strip-url
@@ -61,8 +65,10 @@ class ReferrerPolicy(object):
             Set url's query to null.
         Return url.
         """
+
         if not url:
             return None
+
         return strip_url(url,
                          strip_credentials=True,
                          strip_fragment=True,
@@ -75,9 +81,11 @@ class ReferrerPolicy(object):
 
     def potentially_trustworthy(self, url):
         # Note: this does not follow https://w3c.github.io/webappsec-secure-contexts/#is-url-trustworthy
+
         parsed_url = urlparse(url)
         if parsed_url.scheme in ('data',):
             return False
+
         return self.tls_protected(url)
 
     def tls_protected(self, url):
@@ -251,7 +259,7 @@ class DefaultReferrerPolicy(NoReferrerWhenDowngradePolicy):
     NOREFERRER_SCHEMES = LOCAL_SCHEMES + ('file', 's3')
     name = POLICY_SCRAPY_DEFAULT
 
-
+# 默认策略
 _policy_classes = {p.name: p for p in (
     NoReferrerPolicy,
     NoReferrerWhenDowngradePolicy,
@@ -267,14 +275,15 @@ _policy_classes = {p.name: p for p in (
 # Reference: https://www.w3.org/TR/referrer-policy/#referrer-policy-empty-string
 _policy_classes[''] = NoReferrerWhenDowngradePolicy
 
-
 def _load_policy_class(policy, warning_only=False):
     """
     Expect a string for the path to the policy class,
     otherwise try to interpret the string as a standard value
     from https://www.w3.org/TR/referrer-policy/#referrer-policies
     """
+
     try:
+        # 尝试加载对象
         return load_object(policy)
     except ValueError:
         try:
@@ -282,22 +291,24 @@ def _load_policy_class(policy, warning_only=False):
         except KeyError:
             msg = "Could not load referrer policy %r" % policy
             if not warning_only:
+                # 抛异常
                 raise RuntimeError(msg)
             else:
+                # 仅告警
                 warnings.warn(msg, RuntimeWarning)
                 return None
-
 
 class RefererMiddleware(object):
 
     def __init__(self, settings=None):
         self.default_policy = DefaultReferrerPolicy
+
         if settings is not None:
-            self.default_policy = _load_policy_class(
-                settings.get('REFERRER_POLICY'))
+            self.default_policy = _load_policy_class(settings.get('REFERRER_POLICY'))
 
     @classmethod
     def from_crawler(cls, crawler):
+        # 判断是否开启
         if not crawler.settings.getbool('REFERER_ENABLED'):
             raise NotConfigured
 
