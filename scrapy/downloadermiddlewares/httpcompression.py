@@ -14,6 +14,7 @@ try:
 except ImportError:
     pass
 
+# http压缩
 
 class HttpCompressionMiddleware(object):
     """This middleware allows compressed (gzip, deflate) traffic to be

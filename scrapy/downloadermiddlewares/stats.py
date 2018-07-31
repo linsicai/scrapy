@@ -15,12 +15,14 @@ class DownloaderStats(object):
             raise NotConfigured
         return cls(crawler.stats)
 
+    # 请求统计
     def process_request(self, request, spider):
         self.stats.inc_value('downloader/request_count', spider=spider)
         self.stats.inc_value('downloader/request_method_count/%s' % request.method, spider=spider)
         reqlen = len(request_httprepr(request))
         self.stats.inc_value('downloader/request_bytes', reqlen, spider=spider)
 
+    # 响应统计
     def process_response(self, request, response, spider):
         self.stats.inc_value('downloader/response_count', spider=spider)
         self.stats.inc_value('downloader/response_status_count/%s' % response.status, spider=spider)
@@ -28,6 +30,7 @@ class DownloaderStats(object):
         self.stats.inc_value('downloader/response_bytes', reslen, spider=spider)
         return response
 
+    # 异常统计
     def process_exception(self, request, exception, spider):
         ex_class = global_object_name(exception.__class__)
         self.stats.inc_value('downloader/exception_count', spider=spider)

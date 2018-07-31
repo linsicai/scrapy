@@ -12,6 +12,9 @@ from scrapy.exceptions import NotConfigured
 from scrapy.utils.python import to_bytes
 
 
+# http代理
+
+
 class HttpProxyMiddleware(object):
 
     def __init__(self, auth_encoding='latin-1'):

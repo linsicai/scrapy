@@ -8,6 +8,7 @@ from w3lib.http import basic_auth_header
 
 from scrapy import signals
 
+# 设置授权信息
 
 class HttpAuthMiddleware(object):
     """Set Basic HTTP Authorization header
@@ -19,12 +20,15 @@ class HttpAuthMiddleware(object):
         crawler.signals.connect(o.spider_opened, signal=signals.spider_opened)
         return o
 
+    # 尝试更新
     def spider_opened(self, spider):
         usr = getattr(spider, 'http_user', '')
         pwd = getattr(spider, 'http_pass', '')
         if usr or pwd:
+            # 计算auth
             self.auth = basic_auth_header(usr, pwd)
 
+    # 设置授权
     def process_request(self, request, spider):
         auth = getattr(self, 'auth', None)
         if auth and b'Authorization' not in request.headers:

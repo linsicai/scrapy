@@ -2,6 +2,7 @@
 
 from scrapy import signals
 
+# 默认ua
 
 class UserAgentMiddleware(object):
     """This middleware allows spiders to override the user_agent"""
@@ -12,12 +13,15 @@ class UserAgentMiddleware(object):
     @classmethod
     def from_crawler(cls, crawler):
         o = cls(crawler.settings['USER_AGENT'])
+
         crawler.signals.connect(o.spider_opened, signal=signals.spider_opened)
         return o
 
+    # 请求前尝试更新ua
     def spider_opened(self, spider):
         self.user_agent = getattr(spider, 'user_agent', self.user_agent)
 
+    # 请求前设置ua
     def process_request(self, request, spider):
         if self.user_agent:
             request.headers.setdefault(b'User-Agent', self.user_agent)
