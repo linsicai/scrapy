@@ -3,6 +3,7 @@ from six.moves.http_cookiejar import (
     CookieJar as _CookieJar, DefaultCookiePolicy, IPV4_RE
 )
 from scrapy.utils.httpobj import urlparse_cached
+
 from scrapy.utils.python import to_native_str
 
 
@@ -191,5 +192,6 @@ class WrappedResponse(object):
     def get_all(self, name, default=None):
         return [to_native_str(v, errors='replace')
                 for v in self.response.headers.getlist(name)]
+
     # python2 cookiejars calls getheaders
     getheaders = get_all

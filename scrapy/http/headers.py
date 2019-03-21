@@ -10,14 +10,17 @@ from scrapy.utils.python import to_unicode
 class Headers(CaselessDict):
     """Case insensitive http headers dictionary"""
 
+    # 编码
     def __init__(self, seq=None, encoding='utf-8'):
         self.encoding = encoding
         super(Headers, self).__init__(seq)
 
+    # 首字母大写
     def normkey(self, key):
         """Normalize key to bytes"""
         return self._tobytes(key.title())
 
+    # value是链表
     def normvalue(self, value):
         """Normalize values to bytes"""
         if value is None:
