@@ -1,11 +1,14 @@
 import re
 import csv
 import logging
+
 try:
     from cStringIO import StringIO as BytesIO
 except ImportError:
     from io import BytesIO
+
 from io import StringIO
+
 import six
 
 from scrapy.http import TextResponse, Response
@@ -129,11 +132,15 @@ def csviter(obj, delimiter=None, headers=None, encoding=None, quotechar=None):
 
 def _body_or_str(obj, unicode=True):
     expected_types = (Response, six.text_type, six.binary_type)
+
+    # 类型校验
     assert isinstance(obj, expected_types), \
         "obj must be %s, not %s" % (
             " or ".join(t.__name__ for t in expected_types),
             type(obj).__name__)
+
     if isinstance(obj, Response):
+        # http 响应
         if not unicode:
             return obj.body
         elif isinstance(obj, TextResponse):

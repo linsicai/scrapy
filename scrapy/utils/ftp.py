@@ -14,7 +14,7 @@ def ftp_makedirs_cwd(ftp, path, first_call=True):
         ftp.cwd(path)
 
     except error_perm:
-        # 尝试cd子目录
+        # 尝试cd 父目录
         ftp_makedirs_cwd(ftp, dirname(path), False)
 
         # 创建当前目录

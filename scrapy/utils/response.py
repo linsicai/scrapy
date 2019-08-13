@@ -17,6 +17,7 @@ from scrapy.utils.decorators import deprecated
 @deprecated
 def body_or_str(*a, **kw):
     from scrapy.utils.iterators import _body_or_str
+
     return _body_or_str(*a, **kw)
 
 

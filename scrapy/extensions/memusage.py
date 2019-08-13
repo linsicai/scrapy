@@ -3,9 +3,11 @@ MemoryUsage extension
 
 See documentation in docs/topics/extensions.rst
 """
+
 import sys
 import socket
 import logging
+
 from pprint import pformat
 from importlib import import_module
 
@@ -13,6 +15,7 @@ from twisted.internet import task
 
 from scrapy import signals
 from scrapy.exceptions import NotConfigured
+
 from scrapy.mail import MailSender
 from scrapy.utils.engine import get_engine_status
 

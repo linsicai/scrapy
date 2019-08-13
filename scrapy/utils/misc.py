@@ -1,6 +1,8 @@
 """Helper functions which don't fit anywhere else"""
+
 import re
 import hashlib
+
 from importlib import import_module
 from pkgutil import iter_modules
 
@@ -8,12 +10,14 @@ import six
 from w3lib.html import replace_entities
 
 from scrapy.utils.python import flatten, to_unicode
+
 from scrapy.item import BaseItem
 
 
 _ITERABLE_SINGLE_VALUES = dict, BaseItem, six.text_type, bytes
 
 
+# 参数转list
 def arg_to_iter(arg):
     """Convert an argument to an iterable. The argument can be a None, single
     value, or an iterable.
@@ -23,8 +27,10 @@ def arg_to_iter(arg):
     if arg is None:
         return []
     elif not isinstance(arg, _ITERABLE_SINGLE_VALUES) and hasattr(arg, '__iter__'):
+        # 可以遍历
         return arg
     else:
+        # 转成list
         return [arg]
 
 

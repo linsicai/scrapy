@@ -20,6 +20,7 @@ class Spider(object_ref):
     class.
     """
 
+    // 名字和用户配置
     name = None
     custom_settings = None
 
@@ -28,7 +29,9 @@ class Spider(object_ref):
             self.name = name
         elif not getattr(self, 'name', None):
             raise ValueError("%s must have a name" % type(self).__name__)
+
         self.__dict__.update(kwargs)
+
         if not hasattr(self, 'start_urls'):
             self.start_urls = []
 

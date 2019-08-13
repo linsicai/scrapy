@@ -16,9 +16,12 @@ class Root(Resource):
         return self
 
     def render(self, request):
+        # 读取参数
         total = _getarg(request, b'total', 100, int)
         show = _getarg(request, b'show', 10, int)
         nlist = [random.randint(1, total) for _ in range(show)]
+
+        # 测试页面
         request.write(b"<html><head></head><body>")
         args = request.args.copy()
         for nl in nlist:
@@ -39,6 +42,7 @@ if __name__ == '__main__':
     factory = Site(root)
     httpPort = reactor.listenTCP(8998, Site(root))
 
+    # 监听日志
     def _print_listening():
         httpHost = httpPort.getHost()
         print("Bench server at http://{}:{}".format(httpHost.host, httpHost.port))

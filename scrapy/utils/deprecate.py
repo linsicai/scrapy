@@ -2,16 +2,18 @@
 
 import warnings
 import inspect
+
+# 异常
 from scrapy.exceptions import ScrapyDeprecationWarning
 
-
+# 属性升级告警
 def attribute(obj, oldattr, newattr, version='0.12'):
     cname = obj.__class__.__name__
     warnings.warn("%s.%s attribute is deprecated and will be no longer supported "
         "in Scrapy %s, use %s.%s attribute instead" % \
         (cname, oldattr, version, cname, newattr), ScrapyDeprecationWarning, stacklevel=3)
 
-
+# 创建废弃类
 def create_deprecated_class(name, new_class, clsdict=None,
                             warn_category=ScrapyDeprecationWarning,
                             warn_once=True,
@@ -47,19 +49,24 @@ def create_deprecated_class(name, new_class, clsdict=None,
     OldName.
     """
 
+    # 废弃类，继承新类
     class DeprecatedClass(new_class.__class__):
 
         deprecated_class = None
         warned_on_subclass = False
 
+        # 创建新类
         def __new__(metacls, name, bases, clsdict_):
             cls = super(DeprecatedClass, metacls).__new__(metacls, name, bases, clsdict_)
+
             if metacls.deprecated_class is None:
                 metacls.deprecated_class = cls
+
             return cls
 
         def __init__(cls, name, bases, clsdict_):
             meta = cls.__class__
+    
             old = meta.deprecated_class
             if old in bases and not (warn_once and meta.warned_on_subclass):
                 meta.warned_on_subclass = True
@@ -95,9 +102,12 @@ def create_deprecated_class(name, new_class, clsdict=None,
         def __call__(cls, *args, **kwargs):
             old = DeprecatedClass.deprecated_class
             if cls is old:
+                # 如果是老类的调用，调用告警
                 msg = instance_warn_message.format(cls=_clspath(cls, old_class_path),
                                                    new=_clspath(new_class, new_class_path))
                 warnings.warn(msg, warn_category, stacklevel=2)
+
+            # 转调用新类
             return super(DeprecatedClass, cls).__call__(*args, **kwargs)
 
     deprecated_cls = DeprecatedClass(name, (new_class,), clsdict or {})
@@ -116,10 +126,11 @@ def create_deprecated_class(name, new_class, clsdict=None,
 
     return deprecated_cls
 
-
+# 返回类路径
 def _clspath(cls, forced=None):
     if forced is not None:
         return forced
+
     return '{}.{}'.format(cls.__module__, cls.__name__)
 
 
@@ -146,18 +157,21 @@ DEPRECATION_RULES = [
     ('scrapy.spidermanager.SpiderManager', 'scrapy.spiderloader.SpiderLoader'),
 ]
 
-
+# 更新类路径
 def update_classpath(path):
     """Update a deprecated path from an object with its new location"""
     for prefix, replacement in DEPRECATION_RULES:
         if path.startswith(prefix):
+            # 需要升级，替换路径，且告警
             new_path = path.replace(prefix, replacement, 1)
             warnings.warn("`{}` class is deprecated, use `{}` instead".format(path, new_path),
                           ScrapyDeprecationWarning)
             return new_path
+
     return path
 
-
+# 判断子类的函数是否被改写了
+# 找到函数的代码块，看它们是否一样即刻
 def method_is_overridden(subclass, base_class, method_name):
     """
     Return True if a method named ``method_name`` of a ``base_class``
@@ -185,6 +199,9 @@ def method_is_overridden(subclass, base_class, method_name):
     >>> method_is_overridden(Sub4, Base, 'foo')
     True
     """
+
+    # 找函数模块
     base_method = getattr(base_class, method_name)
     sub_method = getattr(subclass, method_name)
+
     return base_method.__code__ is not sub_method.__code__
