@@ -1,4 +1,5 @@
 from __future__ import print_function
+
 import os
 import logging
 
@@ -24,7 +25,7 @@ class BaseDupeFilter(object):
     def log(self, request, spider):  # log that a request has been filtered
         pass
 
-
+# 去重过滤
 class RFPDupeFilter(BaseDupeFilter):
     """Request Fingerprint duplicates filter"""
 
@@ -45,9 +46,11 @@ class RFPDupeFilter(BaseDupeFilter):
         return cls(job_dir(settings), debug)
 
     def request_seen(self, request):
+        # 找指纹
         fp = self.request_fingerprint(request)
         if fp in self.fingerprints:
             return True
+
         self.fingerprints.add(fp)
         if self.file:
             self.file.write(fp + os.linesep)

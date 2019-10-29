@@ -13,6 +13,7 @@ from scrapy.utils.misc import load_object
 from scrapy.utils.python import binary_is_text, to_bytes, to_native_str
 
 
+# 响应类型
 class ResponseTypes(object):
 
     CLASSES = {
@@ -40,6 +41,7 @@ class ResponseTypes(object):
         for mimetype, cls in six.iteritems(self.CLASSES):
             self.classes[mimetype] = load_object(cls)
 
+    # 根据mimetype 选取结果类型
     def from_mimetype(self, mimetype):
         """Return the most appropriate Response class for the given mimetype"""
         if mimetype is None:
@@ -50,6 +52,7 @@ class ResponseTypes(object):
             basetype = "%s/*" % mimetype.split('/')[0]
             return self.classes.get(basetype, Response)
 
+    # 根据内容类型选取
     def from_content_type(self, content_type, content_encoding=None):
         """Return the most appropriate Response class from an HTTP Content-Type
         header """
@@ -58,6 +61,7 @@ class ResponseTypes(object):
         mimetype = to_native_str(content_type).split(';')[0].strip().lower()
         return self.from_mimetype(mimetype)
 
+    # 最终根据文件名
     def from_content_disposition(self, content_disposition):
         try:
             filename = to_native_str(content_disposition,
@@ -67,6 +71,7 @@ class ResponseTypes(object):
         except IndexError:
             return Response
 
+    // 根据头部
     def from_headers(self, headers):
         """Return the most appropriate Response class by looking at the HTTP
         headers"""
@@ -80,6 +85,7 @@ class ResponseTypes(object):
             cls = self.from_content_disposition(headers[b'Content-Disposition'])
         return cls
 
+    # 根据文件类型
     def from_filename(self, filename):
         """Return the most appropriate Response class from a file name"""
         mimetype, encoding = self.mimetypes.guess_type(filename)
@@ -88,6 +94,7 @@ class ResponseTypes(object):
         else:
             return Response
 
+    # 根据内容头部
     def from_body(self, body):
         """Try to guess the appropriate response based on the body content.
         This method is a bit magic and could be improved in the future, but
@@ -96,6 +103,7 @@ class ResponseTypes(object):
         chunk = body[:5000]
         chunk = to_bytes(chunk)
         if not binary_is_text(chunk):
+            # 字节流
             return self.from_mimetype('application/octet-stream')
         elif b"<html>" in chunk.lower():
             return self.from_mimetype('text/html')

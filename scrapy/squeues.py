@@ -3,10 +3,12 @@ Scheduler queues
 """
 
 import marshal
+
 from six.moves import cPickle as pickle
 
 from queuelib import queue
 
+# 序列化队列
 def _serializable_queue(queue_class, serialize, deserialize):
 
     class SerializableQueue(queue_class):
@@ -31,13 +33,18 @@ def _pickle_serialize(obj):
     except (pickle.PicklingError, AttributeError, TypeError) as e:
         raise ValueError(str(e))
 
+# 二进制序列号队列
 PickleFifoDiskQueue = _serializable_queue(queue.FifoDiskQueue, \
     _pickle_serialize, pickle.loads)
 PickleLifoDiskQueue = _serializable_queue(queue.LifoDiskQueue, \
     _pickle_serialize, pickle.loads)
+
+# 字符串序列号队列
 MarshalFifoDiskQueue = _serializable_queue(queue.FifoDiskQueue, \
     marshal.dumps, marshal.loads)
 MarshalLifoDiskQueue = _serializable_queue(queue.LifoDiskQueue, \
     marshal.dumps, marshal.loads)
+
+# 内存队列
 FifoMemoryQueue = queue.FifoMemoryQueue
 LifoMemoryQueue = queue.LifoMemoryQueue

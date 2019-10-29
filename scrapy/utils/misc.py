@@ -65,17 +65,24 @@ def walk_modules(path):
     For example: walk_modules('scrapy.utils')
     """
 
+    # 加载模块
     mods = []
     mod = import_module(path)
     mods.append(mod)
+
     if hasattr(mod, '__path__'):
+        # 遍历模块
         for _, subpath, ispkg in iter_modules(mod.__path__):
             fullpath = path + '.' + subpath
+
             if ispkg:
+                # 是包则递归遍历
                 mods += walk_modules(fullpath)
             else:
+                # 加模块
                 submod = import_module(fullpath)
                 mods.append(submod)
+
     return mods
 
 

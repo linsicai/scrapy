@@ -10,6 +10,7 @@ DROPPEDMSG = u"Dropped: %(exception)s" + os.linesep + "%(item)s"
 CRAWLEDMSG = u"Crawled (%(status)s) %(request)s%(request_flags)s (referer: %(referer)s)%(response_flags)s"
 
 
+# 日志格式
 class LogFormatter(object):
     """Class for generating log messages for different actions.
 

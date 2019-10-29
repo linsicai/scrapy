@@ -25,7 +25,10 @@ class Field(dict):
 class ItemMeta(ABCMeta):
 
     def __new__(mcs, class_name, bases, attrs):
+        # ???
         classcell = attrs.pop('__classcell__', None)
+
+        # 新基类人
         new_bases = tuple(base._class for base in bases if hasattr(base, '_class'))
         _class = super(ItemMeta, mcs).__new__(mcs, 'x_' + class_name, new_bases, attrs)
 

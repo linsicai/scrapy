@@ -35,7 +35,7 @@ def _to_bytes_or_none(text):
         return None
     return to_bytes(text)
 
-
+# 邮件发送者
 class MailSender(object):
 
     def __init__(self, smtphost='localhost', mailfrom='scrapy@localhost',
@@ -55,6 +55,7 @@ class MailSender(object):
             settings['MAIL_PASS'], settings.getint('MAIL_PORT'),
             settings.getbool('MAIL_TLS'), settings.getbool('MAIL_SSL'))
 
+    # 发邮件
     def send(self, to, subject, body, cc=None, attachs=(), mimetype='text/plain', charset=None, _callback=None):
         if attachs:
             msg = MIMEMultipart()
@@ -105,12 +106,14 @@ class MailSender(object):
         reactor.addSystemEventTrigger('before', 'shutdown', lambda: dfd)
         return dfd
 
+    # 发送成功打点
     def _sent_ok(self, result, to, cc, subject, nattachs):
         logger.info('Mail sent OK: To=%(mailto)s Cc=%(mailcc)s '
                     'Subject="%(mailsubject)s" Attachs=%(mailattachs)d',
                     {'mailto': to, 'mailcc': cc, 'mailsubject': subject,
                      'mailattachs': nattachs})
 
+    # 发送失败打点
     def _sent_failed(self, failure, to, cc, subject, nattachs):
         errstr = str(failure.value)
         logger.error('Unable to send mail: To=%(mailto)s Cc=%(mailcc)s '
@@ -119,6 +122,7 @@ class MailSender(object):
                      {'mailto': to, 'mailcc': cc, 'mailsubject': subject,
                       'mailattachs': nattachs, 'mailerr': errstr})
 
+    # 发送邮件
     def _sendmail(self, to_addrs, msg):
         # Import twisted.mail here because it is not available in python3
         from twisted.mail.smtp import ESMTPSenderFactory

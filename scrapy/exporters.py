@@ -22,12 +22,13 @@ __all__ = ['BaseItemExporter', 'PprintItemExporter', 'PickleItemExporter',
            'CsvItemExporter', 'XmlItemExporter', 'JsonLinesItemExporter',
            'JsonItemExporter', 'MarshalItemExporter']
 
-
+# 基础项导出y
 class BaseItemExporter(object):
 
     def __init__(self, **kwargs):
         self._configure(kwargs)
 
+    # 配置
     def _configure(self, options, dont_fail=False):
         """Configure the exporter by poping options from the ``options`` dict.
         If dont_fail is set, it won't raise an exception on unexpected options
@@ -37,12 +38,15 @@ class BaseItemExporter(object):
         self.fields_to_export = options.pop('fields_to_export', None)
         self.export_empty_fields = options.pop('export_empty_fields', False)
         self.indent = options.pop('indent', None)
+        # 异常检测
         if not dont_fail and options:
             raise TypeError("Unexpected options: %s" % ', '.join(options.keys()))
 
+    # 导出
     def export_item(self, item):
         raise NotImplementedError
 
+    # 序列化值
     def serialize_field(self, field, name, value):
         serializer = field.get('serializer', lambda x: x)
         return serializer(value)
@@ -57,8 +61,10 @@ class BaseItemExporter(object):
         """Return the fields to export as an iterable of tuples
         (name, serialized_value)
         """
+        # 包含空值配置
         if include_empty is None:
             include_empty = self.export_empty_fields
+
         if self.fields_to_export is None:
             if include_empty and not isinstance(item, dict):
                 field_iter = six.iterkeys(item.fields)

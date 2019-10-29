@@ -35,7 +35,7 @@ level_names = {
     SILENT: "SILENT",
 }
 
-
+# 消息
 def msg(message=None, _level=logging.INFO, **kw):
     warnings.warn('log.msg has been deprecated, create a python logger and '
                   'log through it instead',
@@ -48,7 +48,7 @@ def msg(message=None, _level=logging.INFO, **kw):
     # https://hg.python.org/cpython/file/648dcafa7e5f/Lib/logging/__init__.py#l269
     logger.log(level, message, *[kw] if kw else [])
 
-
+# 错误
 def err(_stuff=None, _why=None, **kw):
     warnings.warn('log.err has been deprecated, create a python logger and '
                   'use its error method instead',

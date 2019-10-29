@@ -9,6 +9,7 @@ from scrapy.utils.defer import process_parallel, process_chain, process_chain_bo
 logger = logging.getLogger(__name__)
 
 
+# 中间件管理类
 class MiddlewareManager(object):
     """Base class for implementing middleware managers"""
 
@@ -27,6 +28,7 @@ class MiddlewareManager(object):
     @classmethod
     def from_settings(cls, settings, crawler=None):
         mwlist = cls._get_mwlist_from_settings(settings)
+
         middlewares = []
         enabled = []
         for clspath in mwlist:
@@ -57,7 +59,9 @@ class MiddlewareManager(object):
     def from_crawler(cls, crawler):
         return cls.from_settings(crawler.settings, crawler)
 
+    # 添加中间件
     def _add_middleware(self, mw):
+        # 注册关注事件
         if hasattr(mw, 'open_spider'):
             self.methods['open_spider'].append(mw.open_spider)
         if hasattr(mw, 'close_spider'):

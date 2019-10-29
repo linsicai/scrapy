@@ -43,7 +43,9 @@ class Shell(object):
 
     def start(self, url=None, request=None, response=None, spider=None, redirect=True):
         # disable accidental Ctrl-C key press from shutting down the engine
+        # 关闭ctrl + c
         signal.signal(signal.SIGINT, signal.SIG_IGN)
+
         if url:
             self.fetch(url, spider, redirect=redirect)
         elif request:

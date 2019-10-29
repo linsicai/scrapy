@@ -8,7 +8,7 @@ from scrapy.middleware import MiddlewareManager
 
 from scrapy.utils.conf import build_component_list
 
-# 扩展中间件
+# 扩展件管理
 class ExtensionManager(MiddlewareManager):
     component_name = 'extension'
 

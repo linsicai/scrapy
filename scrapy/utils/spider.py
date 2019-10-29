@@ -22,6 +22,7 @@ def iter_spider_classes(module):
     from scrapy.spiders import Spider
 
     for obj in six.itervalues(vars(module)):
+        # 是子类，模块名对了，有name
         if inspect.isclass(obj) and \
            issubclass(obj, Spider) and \
            obj.__module__ == module.__name__ and \

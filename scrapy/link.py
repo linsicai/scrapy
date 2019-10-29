@@ -10,12 +10,14 @@ import six
 from scrapy.utils.python import to_bytes
 
 
+# 链接
 class Link(object):
     """Link objects represent an extracted link by the LinkExtractor."""
 
     __slots__ = ['url', 'text', 'fragment', 'nofollow']
 
     def __init__(self, url, text='', fragment='', nofollow=False):
+        # 类型检查
         if not isinstance(url, str):
             if six.PY2:
                 warnings.warn("Link urls must be str objects. "
@@ -24,18 +26,22 @@ class Link(object):
             else:
                 got = url.__class__.__name__
                 raise TypeError("Link urls must be str objects, got %s" % got)
+
         self.url = url
         self.text = text
         self.fragment = fragment
         self.nofollow = nofollow
 
+    # 判断相等
     def __eq__(self, other):
         return self.url == other.url and self.text == other.text and \
             self.fragment == other.fragment and self.nofollow == other.nofollow
 
+    # hash
     def __hash__(self):
         return hash(self.url) ^ hash(self.text) ^ hash(self.fragment) ^ hash(self.nofollow)
 
+    # 字符串
     def __repr__(self):
         return 'Link(url=%r, text=%r, fragment=%r, nofollow=%r)' % \
             (self.url, self.text, self.fragment, self.nofollow)

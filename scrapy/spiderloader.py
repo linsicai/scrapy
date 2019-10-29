@@ -18,12 +18,17 @@ class SpiderLoader(object):
     in a Scrapy project.
     """
     def __init__(self, settings):
+        # 读取配置
         self.spider_modules = settings.getlist('SPIDER_MODULES')
         self.warn_only = settings.getbool('SPIDER_LOADER_WARN_ONLY')
+
+        # 初始化
         self._spiders = {}
         self._found = defaultdict(list)
+
         self._load_all_spiders()
 
+    # 同一个名字多个位置，为冲突了
     def _check_name_duplicates(self):
         dupes = ["\n".join("  {cls} named {name!r} (in {module})".format(
                                 module=mod, cls=cls, name=name)
@@ -31,6 +36,7 @@ class SpiderLoader(object):
                  for name, locations in self._found.items()
                  if len(locations)>1]
         if dupes:
+            # 冲突了
             msg = ("There are several spiders with the same name:\n\n"
                    "{}\n\n  This can cause unexpected behavior.".format(
                         "\n\n".join(dupes)))
@@ -42,9 +48,12 @@ class SpiderLoader(object):
             self._spiders[spcls.name] = spcls
 
     def _load_all_spiders(self):
+        # 遍历模块名
         for name in self.spider_modules:
             try:
+                # 遍历所有模块
                 for module in walk_modules(name):
+                    # 加载蜘蛛
                     self._load_spiders(module)
             except ImportError as e:
                 if self.warn_only:
@@ -60,6 +69,7 @@ class SpiderLoader(object):
     def from_settings(cls, settings):
         return cls(settings)
 
+    # 找爬虫
     def load(self, spider_name):
         """
         Return the Spider class for the given spider name. If the spider
@@ -70,6 +80,7 @@ class SpiderLoader(object):
         except KeyError:
             raise KeyError("Spider not found: {}".format(spider_name))
 
+    # 找爬虫列表
     def find_by_request(self, request):
         """
         Return the list of spider names that can handle the given request.
@@ -77,6 +88,7 @@ class SpiderLoader(object):
         return [name for name, cls in self._spiders.items()
                 if cls.handles_request(request)]
 
+    # 所有爬虫名称
     def list(self):
         """
         Return a list with the names of all spiders available in the project.

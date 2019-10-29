@@ -6,7 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
+# 统计收集
 class StatsCollector(object):
 
     def __init__(self, crawler):

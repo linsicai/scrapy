@@ -5,7 +5,7 @@ These exceptions are documented in docs/topics/exceptions.rst. Please don't add
 new exceptions here without documenting them there.
 """
 
-# Internal
+# 内部异常
 
 # 未配置
 class NotConfigured(Exception):

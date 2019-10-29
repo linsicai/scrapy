@@ -21,6 +21,7 @@ def send_catch_log(signal=Any, sender=Anonymous, *arguments, **named):
     """Like pydispatcher.robust.sendRobust but it also logs errors and returns
     Failures instead of exceptions.
     """
+
     dont_log = named.pop('dont_log', _IgnoredException)
     spider = named.get('spider', None)
     responses = []
@@ -70,7 +71,7 @@ def send_catch_log_deferred(signal=Any, sender=Anonymous, *arguments, **named):
     d.addCallback(lambda out: [x[1] for x in out])
     return d
 
-
+# 关闭信号连接
 def disconnect_all(signal=Any, sender=Any):
     """Disconnect all signal handlers. Useful for cleaning up after running
     tests

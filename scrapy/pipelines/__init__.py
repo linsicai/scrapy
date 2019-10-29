@@ -17,6 +17,7 @@ class ItemPipelineManager(MiddlewareManager):
 
     def _add_middleware(self, pipe):
         super(ItemPipelineManager, self)._add_middleware(pipe)
+
         if hasattr(pipe, 'process_item'):
             self.methods['process_item'].append(pipe.process_item)
 
